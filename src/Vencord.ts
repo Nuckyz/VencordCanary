@@ -125,7 +125,7 @@ async function init() {
         const pendingPatches = patches.filter(p => !p.all && p.predicate?.() !== false);
         if (pendingPatches.length)
             PMLogger.warn(
-                "Webpack has finished initialising, but some patches haven't been applied yet.",
+                "Webpacka has finished initialising, but some patches haven't been applied yet.",
                 "This might be expected since some Modules are lazy loaded, but please verify",
                 "that all plugins are working as intended.",
                 "You are seeing this warning because this is a Development build of Vencord.",
