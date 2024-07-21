@@ -23,7 +23,8 @@ import { app, dialog, ipcMain } from "electron";
 import {
     existsSync as originalExistsSync,
     renameSync as originalRenameSync,
-    writeFileSync as originalWriteFileSync,
+    rmSync as originalRmSync,
+    writeFileSync as originalWriteFileSync
 } from "original-fs";
 import { join } from "path";
 
@@ -122,6 +123,12 @@ async function migrateLegacyToAsar() {
 }
 
 function applyPreviousUpdate() {
+    if (originalExistsSync(__dirname + ".old")) {
+        originalRmSync(__dirname + ".old");
+    }
+    if (originalExistsSync(__dirname)) {
+        originalRenameSync(__dirname, __dirname + ".old");
+    }
     originalRenameSync(__dirname + ".new", __dirname);
 
     app.relaunch();
@@ -130,8 +137,10 @@ function applyPreviousUpdate() {
 
 
 app.on("will-quit", () => {
-    if (hasUpdateToApplyOnQuit)
+    if (hasUpdateToApplyOnQuit) {
+        originalRenameSync(__dirname, __dirname + ".old");
         originalRenameSync(__dirname + ".new", __dirname);
+    }
 });
 
 if (isLegacyNonAsarVencord) {
